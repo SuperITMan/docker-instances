@@ -1,0 +1,170 @@
+# Based on traefik.sample.yml: https://github.com/traefik/traefik/blob/master/traefik.sample.yml
+
+################################################################
+# Global configuration
+################################################################
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false
+
+################################################################
+# Traefik logs configuration
+################################################################
+
+# Traefik logs
+# Enabled by default and log to stdout
+#
+# Optional
+#
+log:
+  # Log level
+  #
+  # Optional
+  # Default: "ERROR"
+  #
+  level: INFO
+
+  # Sets the filepath for the traefik log. If not specified, stdout will be used.
+  # Intermediate directories are created if necessary.
+  #
+  # Optional
+  # Default: os.Stdout
+  #
+#  filePath: /var/log/traefik.log
+
+  # Format is either "json" or "common".
+  #
+  # Optional
+  # Default: "common"
+  #
+#  format: json
+
+################################################################
+# Access logs configuration
+################################################################
+
+# Enable access logs
+# By default it will write to stdout and produce logs in the textual
+# Common Log Format (CLF), extended with additional fields.
+#
+# Optional
+#
+accessLog:
+  # Sets the file path for the access log. If not specified, stdout will be used.
+  # Intermediate directories are created if necessary.
+  #
+  # Optional
+  # Default: os.Stdout
+  #
+  filePath: /var/log/access.log
+
+  # Format is either "json" or "common".
+  #
+  # Optional
+  # Default: "common"
+  #
+#  format: json
+
+################################################################
+# API and dashboard configuration
+################################################################
+
+# Enable API and dashboard
+#
+# Optional
+#
+api:
+  # Enable the API in insecure mode
+  #
+  # Optional
+  # Default: false
+  #
+  insecure: false
+
+  # Enabled Dashboard
+  #
+  # Optional
+  # Default: true
+  #
+  dashboard: true
+
+  # Enabled debugging
+  #
+  # Optional
+  # Default: false
+  #
+  debug: false
+
+################################################################
+# Docker configuration backend
+################################################################
+
+providers:
+  # Enable Docker configuration backend
+  docker:
+    # Docker server endpoint. Can be a tcp or a unix socket endpoint.
+    #
+    # Required
+    # Default: "unix:///var/run/docker.sock"
+    #
+    endpoint: "unix:///var/run/docker.sock"
+
+    # Default host rule.
+    #
+    # Optional
+    # Default: "Host(`{{ normalize .Name }}`)"
+    #
+#    defaultRule: Host(`{{ normalize .Name }}.docker.localhost`)
+
+    # Expose containers by default in traefik
+    #
+    # Optional
+    # Default: true
+    #
+    exposedByDefault: false
+
+  file:
+    # Defines the path to the directory that contains the configuration files.
+    directory: /custom-conf/
+
+    # Set the watch option to true to allow Traefik to automatically watch for file changes. 
+    # It works with both the filename and the directory options.
+    watch: true
+
+# Documentation: https://doc.traefik.io/traefik/routing/entrypoints/
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        # This section is a convenience to enable (permanent) redirecting of all incoming requests 
+        # on an entry point (e.g. port 80) to another entry point (e.g. port 443) or an explicit port (:443).
+        entryPoint:
+          # The target element, it can be:
+          # - an entry point name (ex: websecure)
+          # - a port (:443)
+          # 
+          # Required
+          #
+          to: web-secure
+
+          # The redirection target scheme.
+          #
+          # Optional
+          # Default: "https"
+          #
+          scheme: https
+
+          # To apply a permanent redirection.
+          #
+          # Optional
+          # Default: true
+          #
+          permanent: true
+  web-secure:
+    address: ":443"
+    http:
+      # The list of middlewares that are prepended by default to the list of middlewares
+      # of each router associated to the named entry point.
+      middlewares:
+        - security-protocol@file
