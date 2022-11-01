@@ -71,8 +71,15 @@ services:
   keycloak_db:
     container_name: keycloak_db
     image: 'postgres'
+    volumes:
+      - ./db-data:/var/lib/postgresql/data/
+    networks:
+      - keycloak-ntw
     environment:
-      POSTGRES_PASSWORD: Qwerty123
+      - POSTGRES_USER=posgres
+      - PGADMIN_DEFAULT_EMAIL=admin@example.com
+      - POSTGRES_PASSWORD=Qwerty123
+      - PGADMIN_DEFAULT_PASSWORD=admin
 
   keycloak:
     image: quay.io/keycloak/keycloak:latest
@@ -88,14 +95,18 @@ services:
       - DB_PASSWORD=Qwerty123
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=password
-      - KEYCLOAK_FRONTEND_URL=keycloak.${MAIN_DOMAIN}
-    entrypoint: /opt/keycloak/bin/kc.sh start-dev
+      - KEYCLOAK_FRONTEND_URL=https://keycloak.${MAIN_DOMAIN}
+      - PROXY_ADDRESS_FORWARDING=true
+    entrypoint: /opt/keycloak/bin/kc.sh start
+    volumes:
+      - ./keycloak-data:/opt/keycloak/conf
     labels:
       - traefik.enable=true
       - traefik.http.routers.keycloak.entrypoints=web-secure
       - traefik.http.routers.keycloak.rule=Host(`keycloak.${MAIN_DOMAIN}`)
       - traefik.http.routers.keycloak.tls.certresolver=lets-encrypt
     networks:
+      - keycloak-ntw
       - traefik
     expose:
       - 8080
@@ -230,6 +241,8 @@ services:
     restart: unless-stopped
 
 networks:
+  keycloak-ntw:
+    name: keycloak-ntw
   traefik:
     name: traefik  
 volumes:
