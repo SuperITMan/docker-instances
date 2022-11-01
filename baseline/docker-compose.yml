@@ -68,13 +68,26 @@ services:
       - 443:443
     restart: unless-stopped
 
+  keycloak_db:
+    container_name: keycloak_db
+    image: 'postgres'
+    environment:
+      POSTGRES_PASSWORD: Qwerty123
+
   keycloak:
     image: quay.io/keycloak/keycloak:latest
     container_name: keycloak
     hostname: keycloak.superitman.org
+    depends_on:
+      - keycloak_db
     environment:
       - KEYCLOAK_ADMIN=alexis
-      - KEYCLOAK_ADMIN_PASSWORD=Alexis123
+      - KEYCLOAK_ADMIN_PASSWORD=Azerty123
+      - DB_VENDOR=POSTGRES"
+      - DB_ADDR=keycloak_db
+      - DB_PORT=5432
+      - DB_USER=keycloak
+      - DB_PASSWORD=Qwerty123
     labels:
       - traefik.enable=true
       - traefik.http.routers.keycloak.entrypoints=web-secure
