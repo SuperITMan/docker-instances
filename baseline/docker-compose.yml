@@ -73,10 +73,11 @@ services:
     image: 'postgres'
     volumes:
       - ./db-data:/var/lib/postgresql/data/
+      - ./initdb:/docker-entrypoint-initdb.d
     networks:
       - keycloak-ntw
     environment:
-      - POSTGRES_USER=posgres
+      - POSTGRES_USER=keycloak
       - PGADMIN_DEFAULT_EMAIL=admin@example.com
       - POSTGRES_PASSWORD=Qwerty123
       - PGADMIN_DEFAULT_PASSWORD=admin
