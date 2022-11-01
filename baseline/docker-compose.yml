@@ -89,6 +89,7 @@ services:
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=password
       - KEYCLOAK_FRONTEND_URL=keycloak.${MAIN_DOMAIN}
+    entrypoint: /opt/keycloak/bin/kc.sh start
     labels:
       - traefik.enable=true
       - traefik.http.routers.keycloak.entrypoints=web-secure
