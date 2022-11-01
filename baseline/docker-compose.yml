@@ -81,8 +81,6 @@ services:
     depends_on:
       - keycloak_db
     environment:
-      - KEYCLOAK_ADMIN=alexis
-      - KEYCLOAK_ADMIN_PASSWORD=Azerty123
       - DB_VENDOR=POSTGRES"
       - DB_ADDR=keycloak_db
       - DB_PORT=5432
