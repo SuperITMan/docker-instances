@@ -86,8 +86,8 @@ services:
       - DB_PORT=5432
       - DB_USER=keycloak
       - DB_PASSWORD=Qwerty123
-      - KEYCLOAK_USER=admin
-      - KEYCLOAK_PASSWORD=password
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=password
       - KEYCLOAK_FRONTEND_URL=keycloak.${MAIN_DOMAIN}
     entrypoint: /opt/keycloak/bin/kc.sh start
     labels:
