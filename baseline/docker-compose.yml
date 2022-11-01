@@ -80,6 +80,8 @@ services:
       - traefik.http.routers.keycloak.entrypoints=web-secure
       - traefik.http.routers.keycloak.rule=Host(`keycloak.${MAIN_DOMAIN}`)
       - traefik.http.routers.keycloak.tls.certresolver=lets-encrypt
+    networks:
+      - traefik
     expose:
       - 8080
 ######################################
