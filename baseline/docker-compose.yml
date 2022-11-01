@@ -81,11 +81,14 @@ services:
     depends_on:
       - keycloak_db
     environment:
-      - DB_VENDOR=POSTGRES"
+      - DB_VENDOR=POSTGRES
       - DB_ADDR=keycloak_db
       - DB_PORT=5432
       - DB_USER=keycloak
       - DB_PASSWORD=Qwerty123
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=password
+      - KEYCLOAK_FRONTEND_URL=keycloak.${MAIN_DOMAIN}
     labels:
       - traefik.enable=true
       - traefik.http.routers.keycloak.entrypoints=web-secure
