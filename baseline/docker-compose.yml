@@ -73,7 +73,7 @@ services:
     image: 'postgres'
     volumes:
       - ./db-data:/var/lib/postgresql/data/
-      - ./initdb:/docker-entrypoint-initdb.d
+      - ./initdb-postgres:/docker-entrypoint-initdb.d
     networks:
       - keycloak-ntw
     environment:
